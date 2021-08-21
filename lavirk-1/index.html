@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>1</title>
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link href="css/styles.css" rel="stylesheet">
+    <script src="js/vue.js"></script>
+</head>
+<body>
+<div class="wrapper">
+    <div class="sample">
+        <form @submit.prevent="submitForm" v-show="!approve">
+            <div class="form-group">
+                <label>Email</label>
+                <input v-model="email" type="text" class="form-control" ref="email">
+            </div>
+            <div class="form-group">
+                <label>Phone</label>
+                <input v-model="phone" type="text" class="form-control">
+            </div>
+            <div class="form-group">
+                <label>First Name</label>
+                <input v-model="firstName" type="text" class="form-control">
+            </div>
+            <div class="form-group">
+                <label>Last Name</label>
+                <input v-model="lastName" type="text" class="form-control">
+            </div>
+            <h3>Guests</h3>
+            <div class="form-group">
+                <label>Guests</label>
+                <input @click="addGuest" type="button" class="btn btn-primary" value="+">
+            </div>
+            <div class="form-group" v-for="(guest, i) in guests" ref="guest">
+                <label @dblclick="removeGuest(i)">Guest #{{ i + 1 }}</label>
+                <input v-model="guests[i]" type="text" class="form-control" ref="guest_{{ i }}">
+            </div>
+            <hr>
+            <button class="btn btn-success" :disabled="disabled">Send Data</button>
+        </form>
+        <div v-show="approve">
+            <h2>All done!</h2>
+            <table class="table table-bordered">
+                <tr>
+                    <td>Email</td>
+                    <td>{{ email }}</td>
+                </tr>
+                <tr>
+                    <td>Phone</td>
+                    <td>{{ phone }}</td>
+                </tr>
+                <tr>
+                    <td>Full Name</td>
+                    <td>{{ fullName }}</td>
+                </tr>
+                <tr>
+                    <td>Guests</td>
+                    <td>
+                        <table>
+                            <template  v-for="guest in guests">
+                                <tr v-if="guest"><td>{{ guest }}</td></tr>
+                            </template>
+                        </table>
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </div>
+</div>
+<script>
+    let app = Vue.createApp({
+        data: () => ({
+            approve: false,
+            email: '',
+            phone: '',
+            firstName: '',
+            lastName: '',
+            guests: []
+        }),
+        computed: {
+            disabled: function () {
+                return !(this.email && this.phone && this.firstName && this.lastName);
+            },
+            fullName: function () {
+                return this.firstName + ' ' + this.lastName;
+            }
+        },
+        methods: {
+            submitForm: function () {
+                this.approve = true;
+            },
+            addGuest: function () {
+                this.guests.push('');
+            },
+            removeGuest(i) {
+                this.guests.splice(i, 1);
+            }
+        },
+        mounted() {
+            this.$refs.email.focus();
+        }
+    });
+    console.log(app.mount('.sample'));
+</script>
+</body>
+</html>
