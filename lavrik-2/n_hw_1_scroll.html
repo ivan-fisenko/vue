@@ -41,18 +41,25 @@
                 <p>This text no one reads. This text no one reads. This text no one reads.</p>
                 <p>This text no one reads. This text no one reads. This text no one reads.</p>
             </div>
-            <div v-show="scrollEnd">
+            <template v-if="scrollEnd">
                 <div class="form-check">
-                    <div><label class="form-check-label">
-                        <input class="form-check-input" type="checkbox" v-model="agree">
+                    <label class="form-check-label">
+                        <input class="form-check-input" type="checkbox" v-model="agree"
+                               true-value="да"
+                               false-value="нет">
                         Agree all
-                    </label></div>
-                    <div><label class="form-check-label">
-                        <input class="form-check-input" type="checkbox" v-model="spam">
-                        Get spam
-                    </label></div>
+                    </label>
                 </div>
-                <div class="form-check" v-show="spam">
+                <div class="form-check">
+
+                    <label class="form-check-label">
+                        <input class="form-check-input" type="checkbox" v-model="spam"
+                               true-value="да"
+                               false-value="нет">
+                        Get spam
+                    </label>
+                </div>
+                <div class="form-check" v-show="!(spam == 'да')">
                     <div><label class="form-check-label">
                         <input class="form-check-input" type="radio" v-model="spamType" value="phone">
                         phone
@@ -63,12 +70,12 @@
                     </label></div>
                 </div>
                 <hr>
-                <button :disabled="!agree" @click="formSent = true" class="btn btn-primary" type="button">
+                <button :disabled="!(agree == 'да')" @click="formSent = true" class="btn btn-primary" type="button">
                     Send Data
                 </button>
-            </div>
+            </template>
         </form>
-        <div v-show="formSent">
+        <template v-if="formSent">
             <table class="table table-bordered">
                 <tr>
                     <td>Agree</td>
@@ -78,12 +85,12 @@
                     <td>Spam</td>
                     <td>{{spam}}</td>
                 </tr>
-                <tr>
+                <tr v-if="spam">
                     <td>Spam Type</td>
                     <td>{{spamType}}</td>
                 </tr>
             </table>
-        </div>
+        </template>
     </div>
 </div>
 <script>
@@ -97,11 +104,9 @@
             formSent: false,
         }),
         methods: {
-            scroll() {
-                // var container = this.$el.querySelector("#container");
-                // container.scrollTop = container.scrollHeight;
-                console.log(this.scrollEnd)
-                if (this.$refs.text.scrollHeight <= this.$refs.text.scrollTop + this.$refs.text.offsetHeight)
+            scroll(e) {
+                let el = e.target;
+                if (el.scrollHeight <= el.scrollTop + el.offsetHeight)
                     this.scrollEnd = true;
             }
         }
