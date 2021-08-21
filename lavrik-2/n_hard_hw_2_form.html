@@ -12,28 +12,28 @@
 <body>
 	 <div class="wrapper">
 		  <div class="sample">
-				<form>
-				<div class="progress">
-					<div class="progress-bar"></div>
-				</div>
-				<div>
-					<div class="form-group">
-						<label>name</label>
-						<input type="text" class="form-control">
+			  	<form v-show="!formSent">
+					<div class="progress">
+						<div class="progress-bar" :style="progress"></div>
 					</div>
+					<div>
+						<div class="form-group" v-for="(item, i) in info">
+							<label>{{ item.name }}</label> <i class="fa" :class="info[i].class"></i>
+							<input @input="checkItem(i, $event)" type="text" class="form-control" v-model="item.value">
+						</div>
+					</div>
+					<button @click="formSent = true" type="button" class="btn btn-primary" :disabled="!allDone">
+						Send Data
+					</button>
+				</form>
+				<div v-show="formSent">
+					<table class="table table-bordered">
+						<tr v-for="item in info">
+							<td>{{ item.name }}</td>
+							<td>{{ item.value }}</td>
+						</tr>
+					</table>
 				</div>
-				<button class="btn btn-primary">
-					Send Data
-				</button>
-			</form>
-			<div>
-				<table class="table table-bordered">
-					<tr>
-						<td></td>
-						<td></td>
-					</tr>
-				</table>
-			</div>
 		</div>
 	 </div>
 	<script>
@@ -44,30 +44,66 @@
 					{
 						name: 'Name',
 						value: '',
-						pattern: /^[a-zA-Z ]{2,30}$/
+						pattern: /^[a-zA-Z ]{2,30}$/,
+						status: '',
+						class: []
 					},
 					{
 						name: 'Phone',
 						value: '',
-						pattern: /^[0-9]{7,14}$/
+						pattern: /^[0-9]{7,14}$/,
+						status: '',
+						class: []
 					},
 					{
 						name: 'Email',
 						value: '',
-						pattern: /.+/
+						pattern: /.+/,
+						status: '',
+						class: []
 					},
 					{
 						name: 'Some Field 1',
 						value: '',
-						pattern: /.+/
+						pattern: /.+/,
+						status: '',
+						class: []
 					},
 					{
 						name: 'Some Field 2',
 						value: '',
-						pattern: /.+/
+						pattern: /.+/,
+						status: '',
+						class: []
 					}
-				]
-			})
+				],
+				allDone: false,
+				formSent: false
+			}),
+			methods: {
+				checkItem(i, e) {
+					if (this.info[i].pattern.test(this.info[i].value)) {
+						this.info[i].status = true;
+						this.info[i].class = ['fa-check-circle', 'text-success']
+					}
+					else {
+						this.info[i].status = false;
+						this.info[i].class = ['fa-exclamation-circle', 'text-danger']
+					}
+				},
+			},
+			computed: {
+				progress() {
+					let count = 0;
+					for(let item in this.info) {
+						if (this.info[item].status === true)
+							count++;
+					}
+					this.allDone = count == this.info.length ? true : false;
+
+					return {width: count * 100 / this.info.length + '%'}
+				}
+			},
 		}).mount('.sample');
 	</script>
 </body>
