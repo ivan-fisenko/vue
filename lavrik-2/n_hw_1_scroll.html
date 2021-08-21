@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <title>1</title>
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/font-awesome.min.css" rel="stylesheet">
+    <link href="css/styles.css" rel="stylesheet">
+    <style>
+        .content {
+            height: 300px;
+            overflow: auto;
+        }
+    </style>
+    <script src="js/vue.js"></script>
+</head>
+<body>
+<div class="wrapper">
+    <div class="sample">
+        <form  v-show="!formSent">
+            <div class="content alert alert-info" @scroll="scroll" ref="text">
+                <p>This text no one reads. This text no one reads. This text no one reads.</p>
+                <p>This text no one reads. This text no one reads. This text no one reads.</p>
+                <p>This text no one reads. This text no one reads. This text no one reads.</p>
+                <p>This text no one reads. This text no one reads. This text no one reads.</p>
+                <p>This text no one reads. This text no one reads. This text no one reads.</p>
+                <p>This text no one reads. This text no one reads. This text no one reads.</p>
+                <p>This text no one reads. This text no one reads. This text no one reads.</p>
+                <p>This text no one reads. This text no one reads. This text no one reads.</p>
+                <p>This text no one reads. This text no one reads. This text no one reads.</p>
+                <p>This text no one reads. This text no one reads. This text no one reads.</p>
+                <p>This text no one reads. This text no one reads. This text no one reads.</p>
+                <p>This text no one reads. This text no one reads. This text no one reads.</p>
+                <p>This text no one reads. This text no one reads. This text no one reads.</p>
+                <p>This text no one reads. This text no one reads. This text no one reads.</p>
+                <p>This text no one reads. This text no one reads. This text no one reads.</p>
+                <p>This text no one reads. This text no one reads. This text no one reads.</p>
+                <p>This text no one reads. This text no one reads. This text no one reads.</p>
+                <p>This text no one reads. This text no one reads. This text no one reads.</p>
+                <p>This text no one reads. This text no one reads. This text no one reads.</p>
+                <p>This text no one reads. This text no one reads. This text no one reads.</p>
+            </div>
+            <div v-show="scrollEnd">
+                <div class="form-check">
+                    <div><label class="form-check-label">
+                        <input class="form-check-input" type="checkbox" v-model="agree">
+                        Agree all
+                    </label></div>
+                    <div><label class="form-check-label">
+                        <input class="form-check-input" type="checkbox" v-model="spam">
+                        Get spam
+                    </label></div>
+                </div>
+                <div class="form-check" v-show="spam">
+                    <div><label class="form-check-label">
+                        <input class="form-check-input" type="radio" v-model="spamType" value="phone">
+                        phone
+                    </label></div>
+                    <div><label class="form-check-label">
+                        <input class="form-check-input" type="radio" v-model="spamType" value="email">
+                        email
+                    </label></div>
+                </div>
+                <hr>
+                <button :disabled="!agree" @click="formSent = true" class="btn btn-primary" type="button">
+                    Send Data
+                </button>
+            </div>
+        </form>
+        <div v-show="formSent">
+            <table class="table table-bordered">
+                <tr>
+                    <td>Agree</td>
+                    <td>{{agree}}</td>
+                </tr>
+                <tr>
+                    <td>Spam</td>
+                    <td>{{spam}}</td>
+                </tr>
+                <tr>
+                    <td>Spam Type</td>
+                    <td>{{spamType}}</td>
+                </tr>
+            </table>
+        </div>
+    </div>
+</div>
+<script>
+
+    Vue.createApp({
+        data: () => ({
+            scrollEnd: false,
+            agree: false,
+            spam: false,
+            spamType: 'phone',
+            formSent: false,
+        }),
+        methods: {
+            scroll() {
+                // var container = this.$el.querySelector("#container");
+                // container.scrollTop = container.scrollHeight;
+                console.log(this.scrollEnd)
+                if (this.$refs.text.scrollHeight <= this.$refs.text.scrollTop + this.$refs.text.offsetHeight)
+                    this.scrollEnd = true;
+            }
+        }
+    }).mount('.sample');
+
+</script>
+</body>
+</html>
