@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <title>1</title>
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/font-awesome.min.css" rel="stylesheet">
+    <link href="css/styles.css" rel="stylesheet">
+    <script src="js/vue.js"></script>
+</head>
+<body>
+<div class="wrapper">
+    <div class="sample">
+        <form v-if="!formSent">
+            <div class="progress">
+                <div class="progress-bar" :style="progressStyles"></div>
+            </div>
+            <div>
+                <smart-input v-for="(field, i) in info"
+                             :name="field.name"
+                             :value="field.value"
+                             :valid="field.valid"
+                             @myinput="onInput(i, $event)"
+                >
+                </smart-input>
+
+            </div>
+            <button type="button" class="btn btn-primary" :disabled="!formReady" @click="formSent = true">
+                Send Data
+            </button>
+        </form>
+        <div v-else>
+            <table class="table table-bordered">
+                <tr v-for="item in info">
+                    <td>{{ item.name }}</td>
+                    <td>{{ item.value }}</td>
+                </tr>
+            </table>
+        </div>
+    </div>
+</div>
+<script>
+    let inputComponent = {
+        props: ['name', 'value', 'valid'],
+        data: () => ({
+          activated: false,
+        }),
+        template: `<div class="form-group">
+                        <label>{{ name }}</label>
+                        <span v-if="activated"
+                            class="fa"
+                            :class="valid ?
+                            'fa-check-circle text-success' :
+                            'fa-exclamation-circle text-danger'"></span>
+                        <input type="text"
+                            class="form-control"
+                            :value="value"
+                            @input="onInput($event.target.value)">
+                    </div>`,
+        methods: {
+            onInput(value) {
+                this.activated = true;
+                this.$emit('myinput', value)
+            }
+        },
+        created() {
+            this.activated = !!this.value;
+        }
+    };
+
+    let app = Vue.createApp({
+        data: () => ({
+            info: [
+                {
+                    name: 'Name',
+                    value: '',
+                    pattern: /^[a-zA-Z ]{2,30}$/
+                },
+                {
+                    name: 'Phone',
+                    value: '',
+                    pattern: /^[0-9]{7,14}$/
+                },
+                {
+                    name: 'Email',
+                    value: '',
+                    pattern: /.+/
+                },
+                {
+                    name: 'Some Field 1',
+                    value: '',
+                    pattern: /.+/
+                },
+                {
+                    name: 'Some Field 2',
+                    value: '',
+                    pattern: /.+/
+                }
+            ],
+            formSent: false
+        }),
+        computed: {
+            fieldsDone() {
+                 return this.info.reduce((acc, val) => acc + Number(val.valid), 0)
+            },
+            formReady() {
+                return this.fieldsDone === this.info.length;
+            },
+            progressStyles() {
+                return {
+                    width: 100 / this.info.length * this.fieldsDone + '%' // fieldsDone
+                };
+            }
+        },
+        methods: {
+            onInput(i, value) {
+                let field = this.info[i];
+                field.value = value.trim();
+                field.valid = field.pattern.test(field.value);
+            }
+        },
+        created() {
+            return this.info.forEach(field => {
+                    field.valid = field.pattern.test(field.value);
+            });
+        }
+    });
+    app.component('smart-input', inputComponent);
+
+    app.mount('.sample');
+</script>
+</body>
+</html>
