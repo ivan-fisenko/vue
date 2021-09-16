@@ -1,9 +1,9 @@
 <template>
     <div class="form-group">
         <label>{{ name }}</label>
-        <transition name="icon">
-            <fa-icon :class="iconClasses" :name="icon" enter-active-class="icon__animated icon__bounce" leave-active-class="animate__animated animate__bounce"
-					 :key="name"
+        <transition name="icon" mode="out-in">
+            <fa-icon :class="iconClasses" :name="icon"
+					 :key="icon"
                      v-if="activated"></fa-icon>
         </transition>
         <input :value="value"
